@@ -138,7 +138,7 @@ select{font:inherit; font-size:.9rem; color:var(--ink); background:var(--paper);
 .bar-name{min-width:0}
 .bar-name b{display:block; font-weight:600; overflow-wrap:anywhere}
 .bar-name span{font-size:.78rem; color:var(--muted)}
-.track{position:relative; height:22px; border-radius:6px; background:linear-gradient(90deg, transparent 37.5%, var(--band) 37.5%, var(--band) 62.5%, transparent 62.5%)}
+.track{position:relative; height:22px; border-radius:6px; background:linear-gradient(90deg, transparent 25%, var(--band) 25%, var(--band) 75%, transparent 75%)}
 .track::after{content:""; position:absolute; left:50%; top:-3px; bottom:-3px; width:1.5px; background:var(--ink); opacity:.55}
 .fill{position:absolute; top:4px; bottom:4px; border-radius:4px}
 .ci{position:absolute; top:50%; height:2px; background:var(--ink); opacity:.6; transform:translateY(-50%)}
@@ -453,6 +453,7 @@ html{scroll-behavior:smooth}
   var panel = document.getElementById("balance-panel");
   var runs = [];
   var selectedId = null;
+  var hashFixed = false;
 
   function h(tag, attrs){
     var el = document.createElement(tag);
@@ -488,8 +489,8 @@ html{scroll-behavior:smooth}
     panel.append(h("div", {class: "empty"}, h("b", {text: title}), h("span", {text: text})));
   }
 
-  // Шкала процента побед: 30–70% на ширину дорожки
-  var LO = 30, HI = 70;
+  // Шкала процента побед: 40–60% на ширину дорожки, коридор баланса 45–55%
+  var LO = 40, HI = 60;
   function pos(v){ return Math.max(0, Math.min(100, (v - LO) / (HI - LO) * 100)); }
 
   function render(){
@@ -559,7 +560,7 @@ html{scroll-behavior:smooth}
       });
       block.append(bars);
       var ticks = h("div", {class: "ticks", "aria-hidden": "true"});
-      [30, 40, 50, 60, 70].forEach(function(t){ var s = h("span", {text: t + "%"}); s.style.left = pos(t) + "%"; ticks.append(s); });
+      [40, 45, 50, 55, 60].forEach(function(t){ var s = h("span", {text: t + "%"}); s.style.left = pos(t) + "%"; ticks.append(s); });
       block.append(h("div", {class: "axis"}, h("span"), ticks, h("span")));
       panel.append(block);
     }
@@ -597,6 +598,12 @@ html{scroll-behavior:smooth}
     }
 
     if (str(run.source, 160)) panel.append(h("p", {class: "muted", style: "font-size:.85rem"}, "Отчёт прогона: ", h("span", {class: "mono", text: str(run.source, 160)})));
+    // Ссылка #balance: данные приходят после загрузки, поэтому один раз возвращаемся к разделу
+    if (!hashFixed && location.hash === "#balance"){
+      hashFixed = true;
+      var sec = document.getElementById("balance");
+      if (sec) sec.scrollIntoView();
+    }
   }
 
   function start(){
