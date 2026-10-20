@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Стенд «Турнира миров»</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&family=Unbounded:wght@600;700;800&display=swap">
+<style>
+/* Layout: тетрадь в клетку (светлая тема) и школьная доска (тёмная); одна колонка до 1120px, красное поле слева на широком экране, липкая навигация по разделам сверху */
+:root{
+  --paper:#F4F7FB; --grid:rgba(52,96,178,.11); --surface:#FFFFFF; --ink:#172033; --muted:#566176; --rule:#D5DDEA;
+  --accent:#2C5BE0; --accent-ink:#FFFFFF; --rival:#D9443A; --margin:#E8847C;
+  --good:#1B8E50; --warn:#A86C05; --idle:#717B8E; --band:rgba(27,142,80,.13);
+  --w1:#2C5BE0; --w2:#CF6A17; --w3:#7A4FD0; --w4:#13906A;
+  --steppe:#8A5A2B; --mount:#3D6A8C; --cyber:#5B3F9A; --north:#4C5A6B;
+  --font-display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --font-body:"Golos Text",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#18221F; --grid:rgba(214,232,222,.055); --surface:#1F2B27; --ink:#E6EDE8; --muted:#9DB0A6; --rule:#30403A;
+    --accent:#86A6FF; --accent-ink:#0E1626; --rival:#FF8174; --margin:rgba(255,129,116,.38);
+    --good:#56C98A; --warn:#E6B04A; --idle:#8C9A93; --band:rgba(86,201,138,.15);
+    --w1:#86A6FF; --w2:#F2A05A; --w3:#B597F5; --w4:#4FCB9C;
+    --steppe:#D49C66; --mount:#82B2D8; --cyber:#A98DE8; --north:#9DADC2;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#18221F; --grid:rgba(214,232,222,.055); --surface:#1F2B27; --ink:#E6EDE8; --muted:#9DB0A6; --rule:#30403A;
+  --accent:#86A6FF; --accent-ink:#0E1626; --rival:#FF8174; --margin:rgba(255,129,116,.38);
+  --good:#56C98A; --warn:#E6B04A; --idle:#8C9A93; --band:rgba(86,201,138,.15);
+  --w1:#86A6FF; --w2:#F2A05A; --w3:#B597F5; --w4:#4FCB9C;
+    --steppe:#D49C66; --mount:#82B2D8; --cyber:#A98DE8; --north:#9DADC2;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:22px 22px;
+  color:var(--ink); font-family:var(--font-body); font-size:16px; line-height:1.55;
+}
+a{color:var(--accent); text-underline-offset:3px}
+a:focus-visible,button:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--accent); outline-offset:2px; border-radius:4px}
+h1,h2,h3{text-wrap:balance; margin:0}
+p{margin:0}
+.wrap{max-width:1120px; margin:0 auto; padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px))}
+
+/* Навигация */
+.topbar{position:sticky; top:env(safe-area-inset-top, 0px); z-index:10; background:var(--paper); border-bottom:1px solid var(--rule)}
+.topbar .wrap{display:flex; align-items:center; gap:20px; padding-block:10px}
+.brand{font-family:var(--font-display); font-weight:700; font-size:.95rem; white-space:nowrap; color:var(--ink); text-decoration:none}
+.nav{display:flex; gap:4px; overflow-x:auto; scrollbar-width:none; min-width:0}
+.nav::-webkit-scrollbar{display:none}
+.nav a{white-space:nowrap; text-decoration:none; color:var(--muted); font-size:.875rem; font-weight:500; padding:6px 10px; border-radius:999px}
+.nav a:hover{color:var(--ink); background:var(--grid)}
+
+/* Тетрадь: красное поле */
+.doc{position:relative; display:grid; gap:72px; padding-block:48px 80px}
+@media (min-width:960px){
+  .doc{padding-left:76px}
+  .doc::before{content:""; position:absolute; top:0; bottom:0; left:54px; width:2px; background:var(--margin)}
+}
+section{scroll-margin-top:72px; display:grid; gap:22px; min-width:0}
+.eyebrow{font-family:var(--font-mono); font-size:.75rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+h2{font-family:var(--font-display); font-weight:700; font-size:clamp(1.35rem, 3vw, 1.75rem); line-height:1.2}
+h3{font-size:1.05rem; font-weight:700; line-height:1.3}
+.lead{font-size:1.125rem; max-width:62ch}
+.prose{max-width:66ch; color:var(--ink)}
+.muted{color:var(--muted)}
+.mono{font-family:var(--font-mono); font-size:.85em}
+.tabnum{font-variant-numeric:tabular-nums}
+
+/* Шапка */
+.hero{display:grid; gap:28px}
+.hero h1{font-family:var(--font-display); font-weight:800; font-size:clamp(2.5rem, 8vw, 4.9rem); line-height:1; letter-spacing:-.01em}
+.hero h1 .vs{color:var(--rival)}
+.decisions3{display:flex; flex-wrap:wrap; gap:10px}
+.dchip{display:flex; align-items:baseline; gap:8px; padding:8px 14px; border:1.5px solid var(--ink); border-radius:999px; font-weight:600; background:var(--surface)}
+.dchip b{font-family:var(--font-display); font-size:.9rem}
+.dchip span{color:var(--muted); font-weight:500; font-size:.9rem}
+
+/* Состояние работ */
+.status{display:grid; gap:0; border-top:1px solid var(--rule)}
+.srow{display:grid; grid-template-columns:minmax(0,13rem) auto minmax(0,1fr); gap:6px 18px; align-items:baseline; padding:12px 0; border-bottom:1px solid var(--rule)}
+.srow h3{font-size:1rem}
+.srow p{min-width:0}
+@media (max-width:640px){.srow{grid-template-columns:1fr auto} .srow p{grid-column:1 / -1}}
+.pill{display:inline-flex; align-items:center; gap:6px; font-size:.78rem; font-weight:600; padding:2px 10px; border-radius:999px; white-space:nowrap; border:1px solid currentColor}
+.pill::before{content:""; width:7px; height:7px; border-radius:50%; background:currentColor}
+.pill.done{color:var(--good)} .pill.work{color:var(--warn)} .pill.wait{color:var(--idle)}
+
+/* Режимы */
+.modes{display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px}
+.mode{background:var(--surface); border:1px solid var(--rule); border-radius:14px; padding:18px; display:grid; gap:8px; align-content:start}
+.mode .q{font-family:var(--font-display); font-size:1.15rem; font-weight:700}
+.facts{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:10px 28px}
+.fact{display:grid; grid-template-columns:7.5rem minmax(0,1fr); gap:10px; padding-block:8px; border-bottom:1px dashed var(--rule)}
+.fact dt{color:var(--muted); font-size:.9rem}
+.fact dd{margin:0; min-width:0}
+
+/* Таблицы */
+.tablebox{overflow-x:auto; border:1px solid var(--rule); border-radius:14px; background:var(--surface)}
+table{border-collapse:collapse; width:100%; font-size:.94rem}
+th,td{text-align:left; vertical-align:top; padding:11px 14px; border-bottom:1px solid var(--rule)}
+tr:last-child td{border-bottom:0}
+th{font-size:.78rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); font-weight:600; background:var(--paper)}
+td.key{font-weight:700; white-space:nowrap}
+td.num,th.num{text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap}
+.decisions td:first-child{width:9rem}
+.decisions td:nth-child(2){min-width:14rem; font-weight:600}
+.decisions td{min-width:12rem}
+.heroes td:last-child{min-width:16rem}
+.heroes td:first-child{white-space:nowrap}
+.sw{display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:8px}
+.open{display:grid; gap:10px}
+.open ul{margin:0; padding-left:1.2rem; display:grid; gap:6px; max-width:74ch}
+
+/* Баланс */
+.panel{background:var(--surface); border:1px solid var(--rule); border-radius:16px; padding:22px; display:grid; gap:22px; min-width:0}
+.bal-head{display:flex; flex-wrap:wrap; gap:12px 18px; align-items:center; justify-content:space-between}
+.bal-head label{font-size:.85rem; color:var(--muted); display:flex; gap:8px; align-items:center}
+select{font:inherit; font-size:.9rem; color:var(--ink); background:var(--paper); border:1px solid var(--rule); border-radius:10px; padding:6px 10px; max-width:100%}
+.meta{display:flex; flex-wrap:wrap; gap:8px}
+.tag{font-family:var(--font-mono); font-size:.76rem; padding:3px 9px; border-radius:6px; background:var(--paper); border:1px solid var(--rule); color:var(--muted); white-space:nowrap}
+.tag b{color:var(--ink); font-weight:600}
+.tag.ok{color:var(--good); border-color:currentColor}
+.bars{display:grid; gap:8px}
+.bar-row{display:grid; grid-template-columns:minmax(0,11rem) minmax(0,1fr) 5.5rem; gap:12px; align-items:center}
+.bar-name{min-width:0}
+.bar-name b{display:block; font-weight:600; overflow-wrap:anywhere}
+.bar-name span{font-size:.78rem; color:var(--muted)}
+.track{position:relative; height:22px; border-radius:6px; background:linear-gradient(90deg, transparent 37.5%, var(--band) 37.5%, var(--band) 62.5%, transparent 62.5%)}
+.track::after{content:""; position:absolute; left:50%; top:-3px; bottom:-3px; width:1.5px; background:var(--ink); opacity:.55}
+.fill{position:absolute; top:4px; bottom:4px; border-radius:4px}
+.ci{position:absolute; top:50%; height:2px; background:var(--ink); opacity:.6; transform:translateY(-50%)}
+.bar-val{text-align:right; font-family:var(--font-mono); font-size:.85rem; font-variant-numeric:tabular-nums; white-space:nowrap}
+.bar-val small{display:block; color:var(--muted); font-size:.72rem}
+.axis{display:grid; grid-template-columns:minmax(0,11rem) minmax(0,1fr) 5.5rem; gap:12px}
+.axis .ticks{position:relative; height:16px; font-family:var(--font-mono); font-size:.7rem; color:var(--muted)}
+.axis .ticks span{position:absolute; transform:translateX(-50%)}
+.axis .ticks span:first-child{transform:none}
+.axis .ticks span:last-child{transform:translateX(-100%)}
+@media (max-width:560px){
+  .bar-row,.axis{grid-template-columns:minmax(0,1fr) 4.6rem}
+  .bar-name{grid-column:1 / -1}
+  .axis > :first-child{display:none}
+}
+.legend{display:flex; flex-wrap:wrap; gap:6px 16px; font-size:.82rem; color:var(--muted)}
+.legend i{display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:6px; vertical-align:-1px}
+.metrics{display:grid; grid-template-columns:repeat(auto-fit, minmax(210px, 1fr)); gap:12px}
+.metric{border:1px solid var(--rule); border-radius:12px; padding:14px; display:grid; gap:4px; align-content:start; background:var(--paper)}
+.metric .v{font-family:var(--font-mono); font-size:1.5rem; font-weight:600; font-variant-numeric:tabular-nums}
+.metric .g{font-size:.72rem; letter-spacing:.07em; text-transform:uppercase; color:var(--muted)}
+.empty{border:1.5px dashed var(--rule); border-radius:14px; padding:22px; display:grid; gap:8px; color:var(--muted)}
+.empty b{color:var(--ink)}
+
+/* Концепты */
+.concepts{display:grid; gap:22px}
+.gallery{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:12px}
+.gallery figure{margin:0; background:var(--surface); border:1px solid var(--rule); border-radius:12px; overflow:hidden; display:grid; min-width:0}
+.gallery img{width:100%; height:auto; aspect-ratio:1 / 1; object-fit:contain; display:block; max-width:100%}
+.gallery figcaption{padding:8px 12px 10px; font-size:.85rem; color:var(--muted)}
+.gallery figcaption b{color:var(--ink)}
+.sheet{margin:0; display:grid; gap:8px}
+.sheet img{width:100%; height:auto; max-width:100%; border-radius:12px; border:1px solid var(--rule); display:block}
+.sheet figcaption{font-size:.9rem; color:var(--muted); max-width:72ch}
+.sheet figcaption b{color:var(--ink)}
+@media (max-width:480px){.gallery{gap:8px} .gallery figcaption{font-size:.75rem; padding:6px 8px}}
+
+/* Пайплайн */
+.steps{list-style:none; margin:0; padding:0; display:grid; gap:0; counter-reset:step}
+.steps li{counter-increment:step; display:grid; grid-template-columns:2.6rem minmax(0,1fr); gap:14px; padding:14px 0; border-bottom:1px solid var(--rule)}
+.steps li::before{content:counter(step); font-family:var(--font-display); font-weight:700; font-size:1.1rem; color:var(--accent); line-height:1.3}
+.steps li > div{display:grid; gap:4px; min-width:0}
+.tool{font-size:.85rem; color:var(--muted)}
+.humans{display:flex; flex-wrap:wrap; gap:8px}
+.humans span{padding:6px 12px; border-radius:999px; background:var(--surface); border:1px solid var(--rule); font-size:.9rem}
+
+/* План */
+.timeline{display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px}
+.ms{border-top:3px solid var(--accent); padding-top:12px; display:grid; gap:6px; align-content:start}
+.ms .when{font-family:var(--font-mono); font-size:.85rem; color:var(--muted)}
+.checks{display:grid; gap:0; border-top:1px solid var(--rule)}
+.check{display:grid; grid-template-columns:minmax(0,1fr) auto; gap:6px 16px; padding:12px 0; border-bottom:1px solid var(--rule); align-items:baseline}
+.check p{grid-column:1 / -1; color:var(--muted); font-size:.92rem}
+
+/* Риски */
+.risks{display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:14px}
+.risk{border-left:3px solid var(--rival); padding:4px 0 4px 14px; display:grid; gap:6px; align-content:start}
+.risk p{font-size:.94rem}
+.risk .fix{color:var(--muted)}
+
+/* Документы */
+.docs{display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px}
+.docl{display:grid; gap:4px; padding:16px; border:1px solid var(--rule); border-radius:12px; background:var(--surface); text-decoration:none; color:var(--ink)}
+a.docl:hover{border-color:var(--accent)}
+.docl b{font-weight:700}
+.docl span{font-size:.88rem; color:var(--muted)}
+.docl.pending{border-style:dashed; background:transparent}
+footer{border-top:1px solid var(--rule); padding-block:24px 40px; color:var(--muted); font-size:.85rem}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto!important; transition:none!important}}
+html{scroll-behavior:smooth}
+</style>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#top">Турнир миров</a>
+    <nav class="nav" aria-label="Разделы стенда">
+      <a href="#game">Игра</a>
+      <a href="#decisions">Решения</a>
+      <a href="#balance">Баланс</a>
+      <a href="#concepts">Концепты</a>
+      <a href="#pipeline">Пайплайн</a>
+      <a href="#budget">Бюджет</a>
+      <a href="#plan">План</a>
+      <a href="#risks">Риски</a>
+      <a href="#docs">Документы</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+<div class="doc">
+
+<section class="hero" id="top" aria-labelledby="title">
+  <p class="eyebrow">Стенд проекта · обновлён 20 октября 2026</p>
+  <h1 id="title">Турнир миров</h1>
+  <p class="lead">Тактическая арена для 5–11 классов. Бой длится 2–3 минуты, герои дерутся сами, а игрок принимает три решения. Класс играет против класса.</p>
+  <div class="decisions3" aria-label="Три решения игрока">
+    <div class="dchip"><b>Кого</b><span>4 карты в руке из 8 героев</span></div>
+    <div class="dchip"><b>Куда</b><span>15 клеток своей половины</span></div>
+    <div class="dchip"><b>Когда</b><span>«Барьер» и «Гром»</span></div>
+  </div>
+  <div class="status" aria-label="Состояние работ">
+    <div class="srow"><h3>Демо</h3><span class="pill done">играбельно</span><p>Три режима и 8 героев из четырёх миров. Арт временный: герои нарисованы кодом. <a href="demo/">Играть</a></p></div>
+    <div class="srow"><h3>Ресерч</h3><span class="pill done">готов</span><p>AI-пайплайн, движок, режим «Класс», путь до релиза и бюджет, с источниками. <a href="research/">Читать</a></p></div>
+    <div class="srow"><h3>Прототип боя</h3><span class="pill done">работает</span><p>Детерминированное ядро на C#, бот, прогон баланса, проверка задач дня, просмотр повторов. Цифры — в разделе «Баланс».</p></div>
+    <div class="srow"><h3>Пилот ассетов</h3><span class="pill work">идёт</span><p>Рыцарь и маг в четырёх видах, оружие, палитры и атласы готовы, концепты выложены. 3D, риг и анимации ждут тарифа Meshy Pro.</p></div>
+    <div class="srow"><h3>Документ игры</h3><span class="pill work">пишется</span><p>Полное описание игры по демо и продукт-плану, с журналом решений. <a href="gdd/">Открыть документ</a></p></div>
+    <div class="srow"><h3>Спайк в Unity</h3><span class="pill wait">не начат</span><p>Четыре технические проверки до производства ростера, см. «План».</p></div>
+  </div>
+</section>
+
+<section id="game" aria-labelledby="game-h">
+  <p class="eyebrow">Игра</p>
+  <h2 id="game-h">Три режима, один бой на всех</h2>
+  <div class="modes">
+    <article class="mode">
+      <p class="q">«В бой»</p>
+      <p>Один на один против бота-тренера, до двух побед из трёх раундов. Герои остаются на поле между раундами, каждый новый раунд даёт +4 искры на подкрепление.</p>
+    </article>
+    <article class="mode">
+      <p class="q">«Задача дня»</p>
+      <p>Один раунд, три данных героя, без способностей. Например, в задаче № 17 «Дальний прыжок» Тень надо поставить так, чтобы дальше всех от неё оказался Боран. Результатом делятся карточкой без имени и класса.</p>
+    </article>
+    <article class="mode">
+      <p class="q">«Класс»</p>
+      <p>Рейд на босса Айдахара (100 000 HP): каждый бой в любом режиме бьёт по нему. Ещё «класс против класса» по доле сыгравших и турнир по коду учителя. Вместо чата — пять фраз: «Го в рейд!», «Красава!», «Ещё бой?», «Спасибо!», «Жарайсың!».</p>
+    </article>
+  </div>
+  <dl class="facts">
+    <div class="fact"><dt>Для кого</dt><dd>Ученики 5–11 классов, примерно 11–17 лет. Сначала Казахстан: учебная платформа готовит к ЕНТ, данные хранятся в РК. Класс — около 27 человек, например «7 «Б»».</dd></div>
+    <div class="fact"><dt>Бой</dt><dd>Вертикальное поле 5×6. Искры: 7 на старте и +4 каждый раунд, герой стоит 2–4. Расстановка 40 и 25 секунд, раунд до 45 секунд.</dd></div>
+    <div class="fact"><dt>Стиль</dt><dd>Между Thronefall и Clash Royale: коренастые выразительные герои, плоская палитра, арена-диорама, портретный экран.</dd></div>
+    <div class="fact"><dt>Без крови</dt><dd>Побеждённого героя арена выбивает телепортом: вспышка, столб света и реплика выбывания. Это держит детский рейтинг.</dd></div>
+    <div class="fact"><dt>Безопасность</dt><dd>Фразы вместо чата, сгенерированные ники вроде «Тихий Беркут», комнату класса создаёт учитель, тишина в учебные часы.</dd></div>
+    <div class="fact"><dt>Прогресс</dt><dd>Кубки, +28 за победу, лиги вроде «Бронза II». Учёба открывает только облики, силу не даёт.</dd></div>
+    <div class="fact"><dt>Монетизация</dt><dd>Косметика и сезонный пропуск с полностью бесплатной веткой. Без платных лутбоксов и без платного преимущества.</dd></div>
+    <div class="fact"><dt>Платформы</dt><dd>Сначала Android и iOS, плюс веб-версия по ссылке для школьных компьютеров.</dd></div>
+  </dl>
+  <h3>Миры и герои демо</h3>
+  <div class="tablebox">
+    <table class="heroes">
+      <thead><tr><th>Мир</th><th>Герой</th><th>Роль</th><th class="num">Цена</th><th>Что умеет</th></tr></thead>
+      <tbody>
+        <tr><td><span class="sw" style="background:var(--steppe)"></span>Степь</td><td class="key">Ерке</td><td>стрелок, беркутчи</td><td class="num">3</td><td>Каждый четвёртый выстрел — атака беркута по самому дальнему врагу, урон ×1,6.</td></tr>
+        <tr><td><span class="sw" style="background:var(--steppe)"></span>Степь</td><td class="key">Жан</td><td>танк, батыр со щитом</td><td class="num">3</td><td>Притягивает врагов ближе 120 шагов и получает на 20% меньше урона.</td></tr>
+        <tr><td><span class="sw" style="background:var(--steppe)"></span>Степь</td><td class="key">Сардар</td><td>поддержка, знаменосец</td><td class="num">2</td><td>Ставит знамя: союзники рядом атакуют на 25% быстрее.</td></tr>
+        <tr><td><span class="sw" style="background:var(--mount)"></span>Горы</td><td class="key">Боран</td><td>маг, шаман бури</td><td class="num">3</td><td>Молния перескакивает на трёх врагов, каждый раз теряя 30% силы.</td></tr>
+        <tr><td><span class="sw" style="background:var(--mount)"></span>Горы</td><td class="key">Ирбис</td><td>контроль, снежный барс</td><td class="num">3</td><td>Каждый третий удар оглушает цель на 1,1 секунды.</td></tr>
+        <tr><td><span class="sw" style="background:var(--cyber)"></span>Киберград</td><td class="key">Страж-7</td><td>танк, боевой робот</td><td class="num">4</td><td>Раз за бой при 30% здоровья перезагружается и чинит себя на 300.</td></tr>
+        <tr><td><span class="sw" style="background:var(--cyber)"></span>Киберград</td><td class="key">Тень</td><td>ассасин</td><td class="num">3</td><td>В начале боя прыгает за спину самому дальнему врагу и бьёт всех рядом.</td></tr>
+        <tr><td><span class="sw" style="background:var(--north)"></span>Север</td><td class="key">Бьорн</td><td>боец, берсерк</td><td class="num">3</td><td>Удар топора задевает врагов рядом с целью на 40% урона.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted" style="font-size:.88rem">Цена — в искрах. Способности героев срабатывают сами; игрок жмёт только «Барьер» (щит на 100 урона всем своим на 4 секунды) и «Гром» (удар по выбранному месту). Лора миров пока нет.</p>
+</section>
+
+<section id="decisions" aria-labelledby="dec-h">
+  <p class="eyebrow">Решения</p>
+  <h2 id="dec-h">Что выбрано и почему</h2>
+  <div class="tablebox">
+    <table class="decisions">
+      <thead><tr><th>Вопрос</th><th>Решение</th><th>Почему</th><th>Запасной вариант</th></tr></thead>
+      <tbody>
+        <tr><td class="key">Движок</td><td>Unity 6.3 LTS с URP</td><td>Один набор анимаций на всех AI-героев через Humanoid, C# собирается в веб, зрелые SDK покупок и аналитики, бесплатные MCP и CLI для Claude Code. На Unity сделан Thronefall.</td><td>Godot 4.7 — его выбирал продукт-план от 17 октября</td></tr>
+        <tr><td class="key">Ядро боя</td><td>Детерминированная симуляция на C#: фиксированный тик, целочисленная математика</td><td>Одно ядро для телефона и сервера: асинхронные бои, проверка задач дня, античит, повторы и автобаланс.</td><td>—</td></tr>
+        <tr><td class="key">Режим «Класс»</td><td>Асинхронно: рейд на Айдахара, лига «класс против класса», бои с «призраками» одноклассников</td><td>Телефоны на уроках запрещены и в России, и в Казахстане. Живой PvP из продукт-плана остаётся событием.</td><td>Турнир класса по коду учителя</td></tr>
+        <tr><td class="key">Бэкенд</td><td>Nakama на своём сервере и небольшой .NET-сервис боя; Yandex Cloud kz1, регион ru-central1 — если выходим в Россию</td><td>Данные школьников хранятся в своей стране; продукт-план тоже держит всё в Казахстане.</td><td>Photon Quantum</td></tr>
+        <tr><td class="key">Выход к игрокам</td><td>Google Play, App Store, RuStore и веб-ссылка или QR для входа классом</td><td>Класс заходит по ссылке без установки — главный вирусный канал. Платежи Google Play и App Store в России не работают.</td><td>Лицензия для школы</td></tr>
+        <tr><td class="key">Учёба</td><td>Отдельная учебная платформа: математика 5–11 классов и подготовка к ЕНТ</td><td>Прогресс в учёбе открывает только облики. Силу нельзя купить ни за деньги, ни за учёбу.</td><td>—</td></tr>
+        <tr><td class="key">3D</td><td>Герои — Tripo Smart Mesh P2.0 по четырём ракурсам; реквизит и здания — Meshy t2.5</td><td>Квадовая сетка и мульти-вью для героев, дешёвые модели для реквизита.</td><td>Hunyuan 3D API</td></tr>
+        <tr><td class="key">Риг и анимация</td><td>Tripo rig v3.0 со скелетом Unity Humanoid; пресеты и text-to-motion; фирменные клипы в Cascadeur</td><td>AI закрывает 6–8 из 10–12 клипов героя, мультяшный тайминг ставится руками.</td><td>Meshy rig, AccuRIG</td></tr>
+        <tr><td class="key">Эффекты</td><td>В движке: частицы, шейдеры, toon-пак. Видео из MiniMax H3 или Seedance 2.5 — только референс</td><td>Ролик в игру не попадает: Claude Code раскладывает его на кадры и пересобирает эффект в Unity.</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="open">
+    <h3>Что ещё нужно решить</h3>
+    <ul>
+      <li><b>Движок.</b> Ресерч рекомендует Unity 6.3 LTS, продукт-план выбирал Godot 4.</li>
+      <li><b>Живой или асинхронный «Класс».</b> Рекомендация — асинхронно, живой турнир как событие.</li>
+      <li><b>Кто отвечает за «когда».</b> Общие «Барьер» и «Гром» или ульты героев: в прототипе ульта раз за раунд дала моменту нажатия глубину.</li>
+      <li><b>Сколько миров к релизу.</b> В демо четыре, в продукт-плане три.</li>
+      <li><b>Герои прототипа и пилота.</b> Это заглушки; их надо перевести на героев демо.</li>
+      <li><b>Название.</b> «Турнир миров» пока не утверждено; в ранней концепции «Тень» и «Искры» значат другое.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="balance" aria-labelledby="bal-h">
+  <p class="eyebrow">Баланс</p>
+  <h2 id="bal-h">Баланс прототипа боя</h2>
+  <p class="prose muted">Цифры приходят из серого прототипа: бот играет против бота тысячи раз на одном детерминированном ядре. 50% — герой сбалансирован, зелёная полоса — коридор 45–55%. Здесь — снимок прогонов на 20 октября 2026 года; живая версия стенда в Claude обновляется после каждого прогона.</p>
+  <p class="prose" style="font-size:.92rem">Прототип пока считает героев-заглушек (миры Королевство, Звёздный флот, Дикий лес, Мифы) и способности самих героев. Следующий шаг — перенести в него героев и правила демо: искры, руку из четырёх карт, «Барьер» и «Гром».</p>
+  <div class="panel" id="balance-panel" aria-live="polite">
+    <div class="empty" id="balance-empty">
+      <b>Баланс загружается.</b>
+      <span>Здесь появятся процент побед каждого героя, глубина решений «кого, куда, когда» и решаемость задач дня.</span>
+    </div>
+  </div>
+</section>
+
+<section id="concepts" aria-labelledby="con-h">
+  <p class="eyebrow">Концепты</p>
+  <h2 id="con-h">2D-концепты</h2>
+  <p class="prose muted">Референсы из пилота пайплайна: A-поза, ровный свет, оружие отдельно. По ним строятся 3D-модели.</p>
+  <div id="concepts-body" class="concepts">
+    <div class="gallery" aria-label="Виды героев и оружие">
+      <figure><img src="concepts/knight_card.webp" alt="Рыцарь спереди в A-позе" width="720" height="720" loading="lazy"><figcaption><b>Рыцарь</b> · спереди</figcaption></figure>
+      <figure><img src="concepts/knight_right.webp" alt="Рыцарь справа" width="720" height="720" loading="lazy"><figcaption><b>Рыцарь</b> · справа</figcaption></figure>
+      <figure><img src="concepts/knight_back.webp" alt="Рыцарь сзади" width="720" height="720" loading="lazy"><figcaption><b>Рыцарь</b> · сзади</figcaption></figure>
+      <figure><img src="concepts/mage_card.webp" alt="Маг спереди в A-позе" width="720" height="720" loading="lazy"><figcaption><b>Маг</b> · спереди</figcaption></figure>
+      <figure><img src="concepts/mage_right.webp" alt="Маг справа" width="720" height="720" loading="lazy"><figcaption><b>Маг</b> · справа</figcaption></figure>
+      <figure><img src="concepts/mage_back.webp" alt="Маг сзади" width="720" height="720" loading="lazy"><figcaption><b>Маг</b> · сзади</figcaption></figure>
+      <figure><img src="concepts/sword.webp" alt="Меч рыцаря" width="600" height="600" loading="lazy"><figcaption><b>Меч</b> · сокет правой кисти</figcaption></figure>
+      <figure><img src="concepts/shield.webp" alt="Щит рыцаря" width="600" height="600" loading="lazy"><figcaption><b>Щит</b> · сокет левого предплечья</figcaption></figure>
+      <figure><img src="concepts/staff.webp" alt="Посох мага" width="600" height="600" loading="lazy"><figcaption><b>Посох</b> · сокет правой кисти</figcaption></figure>
+    </div>
+    <figure class="sheet"><img src="concepts/knight_model_sheet.webp" alt="Модель-лист рыцаря: четыре вида, силуэты, проверка читаемости, палитра и атлас" width="1600" height="1040" loading="lazy"><figcaption><b>Рыцарь — Королевство, ближний бой.</b> Четыре вида, силуэты, читаемость на телефоне при 48, 72 и 120 px, палитра и атлас 256×256 для плоской покраски.</figcaption></figure>
+    <figure class="sheet"><img src="concepts/mage_model_sheet.webp" alt="Модель-лист мага: четыре вида, силуэты, проверка читаемости, палитра и атлас" width="1600" height="1040" loading="lazy"><figcaption><b>Маг — Академия магии, дальний бой.</b> Тот же формат листа; стиль рыцаря подогнан по магу как по эталону.</figcaption></figure>
+    <figure class="sheet"><img src="concepts/weapons_sheet.webp" alt="Лист оружия: меч, щит и посох с сокетами и палитрой" width="1600" height="780" loading="lazy"><figcaption><b>Оружие — отдельные ассеты.</b> Крепятся к сокету кисти и не скиннятся; в 3D по 400–800 треугольников.</figcaption></figure>
+    <p class="prose" style="font-size:.92rem">Рыцарь и маг — пробные герои пилота: на них проверяли пайплайн. Герои игры — из демо (таблица в разделе «Игра»); их концепты — следующий шаг.</p>
+    <p class="muted" style="font-size:.9rem">Черновики Nano Banana 2 через Higgsfield: сначала вид спереди по тексту, затем виды сбоку и сзади по нему как по референсу. Ракурса 3/4 нет; вид слева — зеркало вида справа. Весь пак, четыре мира (предложение пилота, ждёт утверждения) и карта «что где будет» — на <a href="https://daulet-rama.github.io/turnir-mirov-art/">сайте концептов</a>; он публичный.</p>
+  </div>
+</section>
+
+<section id="pipeline" aria-labelledby="pipe-h">
+  <p class="eyebrow">Пайплайн</p>
+  <h2 id="pipe-h">От картинки до героя в игре</h2>
+  <ol class="steps">
+    <li><div><h3>2D-референс</h3><p>Расслабленная A-поза, вид спереди почти без перспективы, ровный свет без теней, оружие отдельной картинкой. Для героя — четыре ракурса.</p><p class="tool">Nano Banana Pro, GPT Image 2 через Higgsfield или Meshy</p></div></li>
+    <li><div><h3>3D-модель</h3><p>Цель — 2 500–5 000 треугольников на героя и 800–2 000 на юнита.</p><p class="tool">Tripo Smart Mesh P2.0 для героев, Meshy t2.5 для реквизита и зданий</p></div></li>
+    <li><div><h3>Чистка скриптами</h3><p>Палитровый атлас вместо AI-текстур, сокет оружия на кисти, 2–4 кости для плаща или хвоста.</p><p class="tool">Blender, скрипты пишет Claude Code</p></div></li>
+    <li><div><h3>Риг</h3><p>Один скелет на всех героев, ретаргетинг внутри Unity.</p><p class="tool">Tripo rig v3.0, пресет Unity Humanoid</p></div></li>
+    <li><div><h3>Анимации</h3><p>Ожидание, бег, удар, победа и эмоции — из пресетов и text-to-motion. Фирменная атака, способность и выбивание — ключами вручную.</p><p class="tool">Пресеты Tripo и Meshy, Cascadeur</p></div></li>
+    <li><div><h3>Эффекты по видео-референсу</h3><p>Ролик с игровой камеры → кадры → замеры яркости, площади и цвета → частицы и шейдеры в Unity → сверка с референсом, обычно 3–5 итераций.</p><p class="tool">Локальный MiniMax H3 для итераций, Seedance 2.5 для точного стиля и всего публичного</p></div></li>
+  </ol>
+  <div class="prose" style="display:grid; gap:10px">
+    <h3>Что остаётся людям</h3>
+    <div class="humans"><span>Арт-директор: стиль-библия и приёмка</span><span>Техартист-аниматор: веса, фирменные клипы, эффекты</span><span>Плейтесты на детях</span><span>Юрист: согласия, данные, маркировка</span></div>
+  </div>
+</section>
+
+<section id="budget" aria-labelledby="bud-h">
+  <p class="eyebrow">Бюджет</p>
+  <h2 id="bud-h">Инструменты на старт без найма</h2>
+  <p class="prose muted">Первые 3–6 месяцев: вертикальный срез и школьный пилот. Суммы — оценки по ценам октября 2026 года, в долларах.</p>
+  <div class="tablebox">
+    <table>
+      <thead><tr><th>Уровень</th><th>Состав</th><th class="num">В месяц</th><th class="num">Разово</th><th class="num">3 месяца</th><th class="num">6 месяцев</th><th class="num">Новые траты в месяц*</th></tr></thead>
+      <tbody>
+        <tr><td class="key">Минимум</td><td>Claude Pro, Tripo Pro, Meshy Pro, ElevenLabs Starter</td><td class="num">$66</td><td class="num">$0</td><td class="num">$198</td><td class="num">$396</td><td class="num">$26</td></tr>
+        <tr><td class="key">Рекомендуемый</td><td>Claude Max 5x, Tripo Pro, Meshy Pro, Higgsfield Plus, Cascadeur Indie, ElevenLabs Creator</td><td class="num">$240</td><td class="num">$60</td><td class="num">$780</td><td class="num">$1 500</td><td class="num">$61</td></tr>
+        <tr><td class="key">С запасом</td><td>Claude Max 20x, Tripo Pro и API-кредиты, Meshy Pro, Higgsfield Ultra, Cascadeur Pro, ElevenLabs Creator, Rokoko, Unity AI Assistant</td><td class="num">$492</td><td class="num">≈$246</td><td class="num">≈$1 720</td><td class="num">≈$3 200</td><td class="num">$143</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="muted" style="font-size:.88rem">* Если Claude, Meshy и Higgsfield уже оплачены на этих тарифах. Отдельно: тестовый Android до ~10 000 ₽ и сервер на пилот — около 2 740 ₽ или 13 700 ₸ в месяц. Проходит ли оплата сервисов из России и Казахстана, нужно проверить на первом месяце.</p>
+</section>
+
+<section id="plan" aria-labelledby="plan-h">
+  <p class="eyebrow">План</p>
+  <h2 id="plan-h">Сроки и ближайшие проверки</h2>
+  <div class="timeline">
+    <div class="ms"><h3>Вертикальный срез</h3><p class="when">2–4 месяца</p><p>«В бой» и «Задача дня», 8 героев, прототипный арт.</p></div>
+    <div class="ms"><h3>Школьный пилот</h3><p class="when">6–10 месяцев</p><p>Аккаунты, классы, аналитика. Нужно 10–40 классов из нескольких школ.</p></div>
+    <div class="ms"><h3>Софт-запуск</h3><p class="when">12–18+ месяцев</p><p>Монетизация, лайв-опс, античит, 15–25 героев.</p></div>
+  </div>
+  <p class="muted" style="font-size:.88rem">Оценки для одного разработчика с Claude Code и AI-пайплайном. Команда из 2–3 человек дойдёт до пилота за 4–7 месяцев.</p>
+  <h3>Технический спайк: четыре проверки</h3>
+  <div class="checks">
+    <div class="check"><b>Два героя через Tripo P2.0 и Meshy t2.5 до Unity Humanoid</b><span class="pill work">идёт</span><p>2D-референсы и оружие готовы; 3D, риг и анимации ждут Meshy Pro.</p></div>
+    <div class="check"><b>Бой на одинаковых хешах</b><span class="pill work">частично</span><p>Отладочная и релизная сборки дают один результат. Сверка на ARM, iOS и WebAssembly ещё впереди.</p></div>
+    <div class="check"><b>40 юнитов на дешёвом Android</b><span class="pill wait">не начато</span><p>Стабильные 30 кадров в секунду 10 минут подряд, плюс замер памяти, нагрева и размера сборки.</p></div>
+    <div class="check"><b>Выбивание телепортом по видео-референсу</b><span class="pill wait">не начато</span><p>Проверка цепочки «видео → кадры → частицы в Unity» на первом эффекте.</p></div>
+  </div>
+</section>
+
+<section id="risks" aria-labelledby="risk-h">
+  <p class="eyebrow">Риски</p>
+  <h2 id="risk-h">Что может не сработать</h2>
+  <div class="risks">
+    <div class="risk"><h3>Мало глубины в бою</h3><p>Хватит ли трёх решений «кого, куда, когда». Supercell закрыла даже Clash Mini.</p><p class="fix">Проверять серым прототипом и плейтестами до арта.</p></div>
+    <div class="risk"><h3>Подростки не любят AI-арт</h3><p>Среди 13–17-летних к генеративному AI в играх хорошо относятся лишь 3%.</p><p class="fix">Арт под руководством людей, палитровый стиль без артефактов.</p></div>
+    <div class="risk"><h3>Школьные правила</h3><p>На уроках телефоны запрещены; учителя и родители могут увидеть в игре отвлечение.</p><p class="fix">Асинхронный «Класс» и тишина в учебные часы.</p></div>
+    <div class="risk"><h3>Данные детей</h3><p>Хранение в своей стране, отдельное согласие, возможный запрет регистрации до 16 лет в Казахстане.</p><p class="fix">Серверы в РФ и РК, режим без регистрации или аккаунты от учителя, юрист до пилота.</p></div>
+    <div class="risk"><h3>Платежи и сторы в России</h3><p>Google Play и App Store не принимают платежи; RuStore требует ИП или юрлицо.</p><p class="fix">RuStore, веб-оплата с участием родителя, лицензия для школы.</p></div>
+    <div class="risk"><h3>Лицензии AI-моделей</h3><p>Лицензия MiniMax H3 исключает США, ЕС, Великобританию и Корею; бесплатные тарифы Tripo и Meshy не дают приватной коммерческой лицензии.</p><p class="fix">Ролики H3 — только внутри команды; генерировать на платных тарифах; журнал происхождения ассетов.</p></div>
+  </div>
+</section>
+
+<section id="docs" aria-labelledby="docs-h">
+  <p class="eyebrow">Документы</p>
+  <h2 id="docs-h">Где лежит остальное</h2>
+  <div class="docs" id="docs-list">
+    <a class="docl" href="gdd/"><b>Документ игры «Турнир миров»</b><span>Правила, герои и миры, режимы, прогрессия, технологии, план и открытые решения.</span></a>
+    <a class="docl" href="research/"><b>Ресерч «Турнира миров»</b><span>AI-пайплайн, движок, режим «Класс», путь до релиза и бюджет, с источниками.</span></a>
+    <a class="docl" href="https://daulet-rama.github.io/turnir-mirov-art/"><b>Сайт 2D-концептов</b><span>Пак пилота: стиль, миры, герои, оружие, файлы. Публичный, GitHub Pages.</span></a>
+    <a class="docl" href="demo/"><b>Демо «Турнир миров»</b><span>Играбельное демо, октябрь 2026.</span></a>
+    <a class="docl" href="https://claude.ai/artifact/7Cebb9bKEkeAy2S6vX852Y"><b>Продукт-план</b><span>Школьная игра и учебная платформа. Приватно: открывается в Claude.</span></a>
+    <a class="docl" href="https://claude.ai/artifact/ASBobG1XXD4yi225v4eMt2"><b>Ранняя концепция</b><span>Образовательная стратегия в духе Thronefall. Приватно: открывается в Claude.</span></a>
+  </div>
+</section>
+
+</div>
+</main>
+<footer><div class="wrap">Стенд собирает материалы проекта: ресерч, прототип боя, пилот ассетов и документ игры. Суммы и сроки — оценки, а не замеры. Живая версия стенда — <a href="https://claude.ai/artifact/1zoxCoyavCbkBHpb2eUqRh">в Claude</a>.</div></footer>
+
+<script>
+(function(){
+  "use strict";
+  var panel = document.getElementById("balance-panel");
+  var runs = [];
+  var selectedId = null;
+
+  function h(tag, attrs){
+    var el = document.createElement(tag);
+    if (attrs) for (var k in attrs){
+      if (!Object.prototype.hasOwnProperty.call(attrs, k)) continue;
+      if (k === "class") el.className = attrs[k];
+      else if (k === "text") el.textContent = attrs[k];
+      else el.setAttribute(k, attrs[k]);
+    }
+    for (var i = 2; i < arguments.length; i++){
+      var c = arguments[i];
+      if (c == null) continue;
+      el.append(c instanceof Node ? c : String(c));
+    }
+    return el;
+  }
+  function num(v){ return (typeof v === "number" && isFinite(v)) ? v : null; }
+  function str(v, max){ return typeof v === "string" ? v.slice(0, max || 240) : ""; }
+  function pct(v){ return v == null ? "—" : v.toLocaleString("ru-RU", {maximumFractionDigits: 1}) + "%"; }
+  function fmtVal(v, unit){
+    if (v == null) return "—";
+    var s = v.toLocaleString("ru-RU", {maximumFractionDigits: 1});
+    return unit ? (unit === "%" ? s + "%" : s + " " + unit) : s;
+  }
+  function fmtDate(s){
+    var d = new Date(s);
+    if (isNaN(d.getTime())) return "";
+    return d.toLocaleString("ru-RU", {day: "numeric", month: "long", hour: "2-digit", minute: "2-digit"});
+  }
+  function clear(el){ while (el.firstChild) el.removeChild(el.firstChild); }
+  function message(title, text){
+    clear(panel);
+    panel.append(h("div", {class: "empty"}, h("b", {text: title}), h("span", {text: text})));
+  }
+
+  // Шкала процента побед: 30–70% на ширину дорожки
+  var LO = 30, HI = 70;
+  function pos(v){ return Math.max(0, Math.min(100, (v - LO) / (HI - LO) * 100)); }
+
+  function render(){
+    if (!runs.length){
+      message("Прогонов баланса пока нет.", "Их публикует сессия серого прототипа после каждого прогона: бот против бота, тысячи боёв на детерминированном ядре.");
+      return;
+    }
+    var run = runs.find(function(r){ return r.id === selectedId; }) || runs[0];
+    clear(panel);
+
+    // Шапка: выбор прогона и метаданные
+    var sel = h("select", {id: "run-select", "aria-label": "Прогон баланса"});
+    runs.forEach(function(r){
+      var label = (str(r.version, 40) || r.id) + (str(r.title, 60) ? " — " + str(r.title, 60) : "");
+      var o = h("option", {value: r.id, text: label});
+      if (r.id === run.id) o.selected = true;
+      sel.append(o);
+    });
+    sel.addEventListener("change", function(){ selectedId = sel.value; render(); });
+
+    var meta = h("div", {class: "meta"});
+    function tag(k, v, cls){ if (v) meta.append(h("span", {class: "tag" + (cls ? " " + cls : "")}, k ? k + " " : "", h("b", {text: v}))); }
+    tag("", fmtDate(run.created_at));
+    tag("боёв", num(run.battles) != null ? num(run.battles).toLocaleString("ru-RU") : "");
+    tag("тестов", num(run.tests_passed) != null ? String(num(run.tests_passed)) : "");
+    tag("сид", num(run.seed) != null ? String(num(run.seed)) : "");
+    tag("данные", str(run.data_hash, 40));
+    if (run.deterministic === true) meta.append(h("span", {class: "tag ok", text: "детерминизм подтверждён"}));
+
+    panel.append(h("div", {class: "bal-head"}, h("label", {"for": "run-select"}, "Прогон", sel), meta));
+    if (str(run.summary, 600)) panel.append(h("p", {class: "prose", text: str(run.summary, 600)}));
+
+    // Герои
+    var heroes = Array.isArray(run.heroes) ? run.heroes.filter(function(x){ return x && typeof x === "object" && num(x.win_rate) != null; }) : [];
+    if (heroes.length){
+      heroes = heroes.slice(0, 60).sort(function(a, b){ return b.win_rate - a.win_rate; });
+      var worlds = [];
+      heroes.forEach(function(x){ var w = str(x.world, 40); if (w && worlds.indexOf(w) < 0) worlds.push(w); });
+      function wcolor(w){ var i = worlds.indexOf(w); return i >= 0 && i < 4 ? "var(--w" + (i + 1) + ")" : "var(--idle)"; }
+
+      var block = h("div", {style: "display:grid; gap:12px"}, h("h3", {text: "Процент побед героев"}));
+      if (worlds.length){
+        var lg = h("div", {class: "legend"});
+        worlds.forEach(function(w){ var i = h("i"); i.style.background = wcolor(w); lg.append(h("span", null, i, w)); });
+        block.append(lg);
+      }
+      var bars = h("div", {class: "bars", role: "list"});
+      heroes.forEach(function(x){
+        var wr = num(x.win_rate), ci = num(x.ci95);
+        var track = h("div", {class: "track", "aria-hidden": "true"});
+        var a = pos(Math.min(wr, 50)), b = pos(Math.max(wr, 50));
+        var fill = h("div", {class: "fill"});
+        fill.style.left = a + "%"; fill.style.width = Math.max(b - a, 0.6) + "%"; fill.style.background = wcolor(str(x.world, 40));
+        track.append(fill);
+        if (ci != null && ci > 0){
+          var c1 = pos(wr - ci), c2 = pos(wr + ci);
+          var cl = h("div", {class: "ci"}); cl.style.left = c1 + "%"; cl.style.width = Math.max(c2 - c1, 0.4) + "%";
+          track.append(cl);
+        }
+        var sub = [str(x.world, 40), str(x.role, 40), str(x.ability, 60)].filter(Boolean).join(" · ");
+        var row = h("div", {class: "bar-row", role: "listitem"},
+          h("div", {class: "bar-name"}, h("b", {text: str(x.name, 60) || "Герой"}), sub ? h("span", {text: sub}) : null),
+          track,
+          h("div", {class: "bar-val"}, pct(wr), ci != null ? h("small", {text: "±" + ci.toLocaleString("ru-RU", {maximumFractionDigits: 1})}) : null)
+        );
+        bars.append(row);
+      });
+      block.append(bars);
+      var ticks = h("div", {class: "ticks", "aria-hidden": "true"});
+      [30, 40, 50, 60, 70].forEach(function(t){ var s = h("span", {text: t + "%"}); s.style.left = pos(t) + "%"; ticks.append(s); });
+      block.append(h("div", {class: "axis"}, h("span"), ticks, h("span")));
+      panel.append(block);
+    }
+
+    // Глубина решений и прочие метрики
+    var metrics = Array.isArray(run.metrics) ? run.metrics.filter(function(m){ return m && typeof m === "object" && str(m.label, 160); }).slice(0, 24) : [];
+    if (metrics.length){
+      var mg = h("div", {class: "metrics"});
+      metrics.forEach(function(m){
+        mg.append(h("div", {class: "metric"},
+          str(m.group, 40) ? h("span", {class: "g", text: str(m.group, 40)}) : null,
+          h("span", {class: "v", text: fmtVal(num(m.value), str(m.unit, 12))}),
+          h("span", {text: str(m.label, 160)}),
+          str(m.note, 240) ? h("span", {class: "muted", style: "font-size:.85rem", text: str(m.note, 240)}) : null
+        ));
+      });
+      panel.append(h("div", {style: "display:grid; gap:12px"}, h("h3", {text: "Глубина решений"}), mg));
+    }
+
+    // Задачи дня
+    var puzzles = Array.isArray(run.puzzles) ? run.puzzles.filter(function(p){ return p && typeof p === "object"; }).slice(0, 30) : [];
+    if (puzzles.length){
+      var tb = h("tbody");
+      puzzles.forEach(function(p, i){
+        tb.append(h("tr", null,
+          h("td", {text: str(p.title, 80) || ("Задача " + (i + 1))}),
+          h("td", {class: "num", text: pct(num(p.winning_share))}),
+          h("td", {class: "num", text: num(p.solutions) != null ? num(p.solutions).toLocaleString("ru-RU") : "—"}),
+          h("td", {text: str(p.note, 200)})
+        ));
+      });
+      var table = h("table", null, h("thead", null, h("tr", null,
+        h("th", {text: "Задача"}), h("th", {class: "num", text: "Выигрышных расстановок"}), h("th", {class: "num", text: "Решений"}), h("th", {text: "Заметка"}))), tb);
+      panel.append(h("div", {style: "display:grid; gap:12px"}, h("h3", {text: "Задачи дня"}), h("div", {class: "tablebox"}, table)));
+    }
+
+    if (str(run.source, 160)) panel.append(h("p", {class: "muted", style: "font-size:.85rem"}, "Отчёт прогона: ", h("span", {class: "mono", text: str(run.source, 160)})));
+  }
+
+  function start(){
+    fetch("data/balance_runs.json", {cache: "no-cache"}).then(function(r){
+      if (!r.ok) throw new Error(String(r.status));
+      return r.json();
+    }).then(function(arr){
+      runs = (Array.isArray(arr) ? arr : []).filter(function(x){ return x && typeof x === "object"; });
+      runs.sort(function(x, y){ return String(y.created_at || "").localeCompare(String(x.created_at || "")); });
+      render();
+    }).catch(function(){
+      message("Не удалось загрузить снимок баланса.", "Обнови страницу чуть позже.");
+    });
+  }
+  start();
+})();
+</script>
+
+</body>
+</html>
